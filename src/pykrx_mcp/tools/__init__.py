@@ -3,6 +3,7 @@
 from .etf_price import get_etf_ohlcv_by_date, get_etf_ticker_list
 from .foreign_investment import get_exhaustion_rates_of_foreign_investment
 from .fundamental import get_market_fundamental_by_date
+from .gold_price import get_gold_price_by_date
 from .index import (
     get_index_fundamental,
     get_index_ohlcv,
@@ -58,4 +59,6 @@ __all__ = [
     # Market-wide data
     "get_market_ohlcv_by_date",
     "get_market_price_change",
+    # Gold price
+    "get_gold_price_by_date",
 ]

@@ -31,6 +31,9 @@ from .tools import (
     get_index_fundamental as get_index_fundamental_impl,
 )
 from .tools import (
+    get_gold_price_by_date as get_gold_price_impl,
+)
+from .tools import (
     get_index_ohlcv as get_index_ohlcv_impl,
 )
 from .tools import (
@@ -228,6 +231,32 @@ def get_stock_ohlcv(
         Returns Samsung Electronics stock data for January 2024.
     """
     return get_stock_ohlcv_impl(ticker, start_date, end_date, adjusted)
+
+
+@mcp.tool()
+def get_gold_price_by_date(
+    start_date: str,
+    end_date: str,
+    isu_code: str = "KRD040200002",
+) -> dict:
+    """
+    Retrieve gold price data from KRX gold market.
+
+    Uses pykrx.website.krx.items.개별종목_시세_추이().fetch to retrieve
+    gold price history. Default isu_code corresponds to KRX Gold (Au 99.99).
+
+    Args:
+        start_date: Start date in YYYYMMDD format (e.g., "20240101").
+        end_date: End date in YYYYMMDD format (e.g., "20240131").
+        isu_code: KRX issue code (default: "KRD040200002").
+
+    Returns:
+        Dictionary containing gold price data with dates and price/volume fields.
+
+    Example:
+        get_gold_price_by_date("20240101", "20240131")
+    """
+    return get_gold_price_impl(start_date, end_date, isu_code)
 
 
 @mcp.tool()
