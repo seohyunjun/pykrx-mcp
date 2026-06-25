@@ -8,7 +8,6 @@ to AI agents via the Model Context Protocol (MCP).
 import argparse
 import logging
 import os
-import sys
 
 from mcp.server.fastmcp import FastMCP
 
@@ -18,6 +17,7 @@ from .prompts import (
     screen_undervalued_stocks,
 )
 from .resources import get_krx_info, get_pykrx_manual
+from .utils import configure_logging
 from .tools import (
     get_etf_ohlcv_by_date as get_etf_ohlcv_impl,
 )
@@ -32,6 +32,15 @@ from .tools import (
 )
 from .tools import (
     get_gold_price_by_date as get_gold_price_impl,
+)
+from .tools import (
+    get_gold_price_change as get_gold_price_change_impl,
+)
+from .tools import (
+    get_latest_gold_price as get_latest_gold_price_impl,
+)
+from .tools import (
+    get_recent_gold_price as get_recent_gold_price_impl,
 )
 from .tools import (
     get_index_ohlcv as get_index_ohlcv_impl,
@@ -79,6 +88,9 @@ from .tools import (
     get_shorting_balance_top50 as get_shorting_balance_top50_impl,
 )
 from .tools import (
+    get_shorting_investor_volume_by_date as get_shorting_investor_volume_impl,
+)
+from .tools import (
     get_shorting_status_by_date as get_shorting_status_impl,
 )
 from .tools import (
@@ -91,13 +103,11 @@ from .tools import (
     get_stock_ohlcv as get_stock_ohlcv_impl,
 )
 
-# Configure logging to stderr BEFORE creating FastMCP instance
-# (MCP uses stdout for protocol communication)
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    stream=sys.stderr,
-)
+# Configure logging BEFORE creating FastMCP instance.
+# Logs go to stderr (MCP uses stdout for protocol communication); set
+# LOG_LEVEL=DEBUG for verbose per-tool logging and LOG_FILE=/path/to.log to
+# also write a rotating log file for debugging.
+configure_logging()
 
 logger = logging.getLogger(__name__)
 
@@ -257,6 +267,77 @@ def get_gold_price_by_date(
         get_gold_price_by_date("20240101", "20240131")
     """
     return get_gold_price_impl(start_date, end_date, isu_code)
+
+
+@mcp.tool()
+def get_latest_gold_price(isu_code: str = "KRD040200002") -> dict:
+    """
+    Get the most recent KRX gold price (latest trading day).
+
+    Fetches the latest available gold OHLCV record. If today has no data
+    yet (e.g., before market close or on a holiday), it falls back to the
+    previous day.
+
+    Args:
+        isu_code: KRX issue code (default: "KRD040200002" for KRX Gold Au 99.99)
+
+    Returns:
+        Dictionary with date, open, high, low, close, volume, trading_value
+
+    Example:
+        get_latest_gold_price()
+    """
+    return get_latest_gold_price_impl(isu_code)
+
+
+@mcp.tool()
+def get_gold_price_change(
+    start_date: str,
+    end_date: str,
+    isu_code: str = "KRD040200002",
+) -> dict:
+    """
+    Analyze KRX gold price change over a specified date range.
+
+    Calculates start/end price, absolute and percentage change, period
+    high/low, average price, and total volume/trading value.
+
+    Args:
+        start_date: Start date in YYYYMMDD format (e.g., "20240101")
+        end_date: End date in YYYYMMDD format (e.g., "20240131")
+        isu_code: KRX issue code (default: "KRD040200002")
+
+    Returns:
+        Dictionary with gold price change analysis
+
+    Example:
+        get_gold_price_change("20240101", "20240131")
+    """
+    return get_gold_price_change_impl(start_date, end_date, isu_code)
+
+
+@mcp.tool()
+def get_recent_gold_price(days: int = 30, isu_code: str = "KRD040200002") -> dict:
+    """
+    Retrieve and analyze recent KRX gold prices over the last N days.
+
+    Convenience tool for requests like "analyze the last 30 days of gold
+    prices". Automatically computes the date range ending today, then returns
+    both the daily OHLCV records and a summary analysis (trend, change,
+    volatility, max daily gain/loss, average volume).
+
+    Args:
+        days: Number of calendar days to look back from today (default: 30)
+        isu_code: KRX issue code (default: "KRD040200002" for KRX Gold Au 99.99)
+
+    Returns:
+        Dictionary with period metadata, an analysis summary, and daily data
+
+    Example:
+        get_recent_gold_price()     # last 30 days
+        get_recent_gold_price(7)    # last 7 days
+    """
+    return get_recent_gold_price_impl(days, isu_code)
 
 
 @mcp.tool()
@@ -571,6 +652,30 @@ def get_shorting_volume_top50(date: str, market: str = "KOSPI") -> dict:
         get_shorting_volume_top50("20240101", "KOSPI")
     """
     return get_shorting_volume_top50_impl(date, market)
+
+
+@mcp.tool()
+def get_shorting_investor_volume_by_date(
+    start_date: str, end_date: str, market: str = "KOSPI"
+) -> dict:
+    """
+    Get short selling trading volume by investor type over a period.
+
+    Returns daily short selling volume broken down by investor type
+    (기관/개인/외국인/기타) for an entire market.
+
+    Args:
+        start_date: Start date in YYYYMMDD format
+        end_date: End date in YYYYMMDD format
+        market: Market type - KOSPI/KOSDAQ/KONEX
+
+    Returns:
+        Dictionary with daily short selling volume per investor type
+
+    Example:
+        get_shorting_investor_volume_by_date("20240101", "20240131", "KOSPI")
+    """
+    return get_shorting_investor_volume_impl(start_date, end_date, market)
 
 
 # ===== Investor Trading Tools =====

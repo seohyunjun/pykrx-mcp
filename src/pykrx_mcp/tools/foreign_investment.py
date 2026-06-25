@@ -8,7 +8,7 @@ from pykrx import stock
 
 from ..utils.decorators import handle_pykrx_errors
 from ..utils.formatters import dict_to_table
-from ..utils.validators import validate_date_format, validate_ticker
+from ..utils.validators import validate_date, validate_ticker
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +41,7 @@ def get_exhaustion_rates_of_foreign_investment(
         f"from {start_date} to {end_date or start_date}"
     )
 
-    if not validate_date_format(start_date):
+    if not validate_date(start_date):
         return {
             "error": "Invalid start_date format. Use YYYYMMDD (e.g., '20240101').",
             "start_date": start_date,
@@ -49,7 +49,7 @@ def get_exhaustion_rates_of_foreign_investment(
 
     if end_date and ticker:
         # 일자별 특정 종목 조회
-        if not validate_date_format(end_date):
+        if not validate_date(end_date):
             return {
                 "error": "Invalid end_date format. Use YYYYMMDD (e.g., '20240131').",
                 "end_date": end_date,

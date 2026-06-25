@@ -8,7 +8,7 @@ from pykrx import stock
 
 from ..utils.decorators import handle_pykrx_errors
 from ..utils.formatters import dict_to_table
-from ..utils.validators import validate_date_format
+from ..utils.validators import validate_date
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +29,7 @@ def get_market_ohlcv_by_date(date: str, market: str = "KOSPI") -> dict[str, Any]
     """
     logger.info(f"Fetching market OHLCV for {market} on {date}")
 
-    if not validate_date_format(date):
+    if not validate_date(date):
         return {
             "error": "Invalid date format. Use YYYYMMDD (e.g., '20240101').",
             "date": date,
@@ -85,7 +85,7 @@ def get_market_price_change(
         f"Fetching market price change for {market} from {start_date} to {end_date}"
     )
 
-    if not validate_date_format(start_date) or not validate_date_format(end_date):
+    if not validate_date(start_date) or not validate_date(end_date):
         return {
             "error": "Invalid date format. Use YYYYMMDD (e.g., '20240101').",
             "start_date": start_date,

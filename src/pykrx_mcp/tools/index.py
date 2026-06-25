@@ -8,7 +8,7 @@ from pykrx import stock
 
 from ..utils.decorators import handle_pykrx_errors
 from ..utils.formatters import dict_to_table
-from ..utils.validators import validate_date_format
+from ..utils.validators import validate_date
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +29,7 @@ def get_index_ticker_list(date: str = None, market: str = "KOSPI") -> dict[str, 
     """
     logger.info(f"Fetching index ticker list for {market} on {date or 'latest'}")
 
-    if date and not validate_date_format(date):
+    if date and not validate_date(date):
         return {
             "error": "Invalid date format. Use YYYYMMDD (e.g., '20240101').",
             "date": date,
@@ -106,7 +106,7 @@ def get_index_ohlcv(
         f"Fetching index OHLCV for {ticker} from {start_date} to {end_date} ({freq})"
     )
 
-    if not validate_date_format(start_date) or not validate_date_format(end_date):
+    if not validate_date(start_date) or not validate_date(end_date):
         return {
             "error": "Invalid date format. Use YYYYMMDD (e.g., '20240101').",
             "start_date": start_date,
@@ -162,14 +162,14 @@ def get_index_fundamental(
         f"from {start_date} to {end_date or start_date}"
     )
 
-    if not validate_date_format(start_date):
+    if not validate_date(start_date):
         return {
             "error": "Invalid start_date format. Use YYYYMMDD (e.g., '20240101').",
             "start_date": start_date,
         }
 
     if end_date:
-        if not validate_date_format(end_date):
+        if not validate_date(end_date):
             return {
                 "error": "Invalid end_date format. Use YYYYMMDD (e.g., '20240131').",
                 "end_date": end_date,
@@ -221,7 +221,7 @@ def get_index_portfolio_deposit_file(ticker: str, date: str = None) -> dict[str,
     """
     logger.info(f"Fetching index portfolio for {ticker} on {date or 'latest'}")
 
-    if date and not validate_date_format(date):
+    if date and not validate_date(date):
         return {
             "error": "Invalid date format. Use YYYYMMDD (e.g., '20240101').",
             "date": date,

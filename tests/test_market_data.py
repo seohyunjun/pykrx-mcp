@@ -38,7 +38,8 @@ def test_get_market_price_change():
 
 def test_get_market_price_change_invalid_date():
     """Test error handling for invalid date format."""
+    print("Testing invalid date format...")
     result = get_market_price_change("2024-01-01", "20240105", "KOSPI")
-
+    print(result)
     assert "error" in result
     assert "Invalid date" in result["error"]

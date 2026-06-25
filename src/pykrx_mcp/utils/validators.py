@@ -96,3 +96,28 @@ def validate_ticker(ticker: str) -> bool:
     """
     is_valid, _ = validate_ticker_format(ticker)
     return is_valid
+
+
+def validate_date(date_str: str) -> bool:
+    """
+    Check if date is valid YYYYMMDD format (convenience function).
+
+    Returns a plain ``bool`` so it can be used directly in boolean
+    contexts (``if not validate_date(...)``). Note that
+    :func:`validate_date_format` returns a ``(bool, message)`` tuple, which
+    is always truthy and must never be used as a bare boolean.
+
+    Args:
+        date_str: Date string to validate
+
+    Returns:
+        True if valid, False otherwise
+
+    Examples:
+        >>> validate_date("20240101")
+        True
+        >>> validate_date("2024-01-01")
+        False
+    """
+    is_valid, _ = validate_date_format(date_str)
+    return is_valid

@@ -3,7 +3,12 @@
 from .etf_price import get_etf_ohlcv_by_date, get_etf_ticker_list
 from .foreign_investment import get_exhaustion_rates_of_foreign_investment
 from .fundamental import get_market_fundamental_by_date
-from .gold_price import get_gold_price_by_date
+from .gold_price import (
+    get_gold_price_by_date,
+    get_gold_price_change,
+    get_latest_gold_price,
+    get_recent_gold_price,
+)
 from .index import (
     get_index_fundamental,
     get_index_ohlcv,
@@ -20,6 +25,7 @@ from .market_cap import get_market_cap_by_date
 from .market_data import get_market_ohlcv_by_date, get_market_price_change
 from .shorting import (
     get_shorting_balance_top50,
+    get_shorting_investor_volume_by_date,
     get_shorting_status_by_date,
     get_shorting_volume_by_ticker,
     get_shorting_volume_top50,
@@ -50,6 +56,7 @@ __all__ = [
     "get_shorting_volume_by_ticker",
     "get_shorting_balance_top50",
     "get_shorting_volume_top50",
+    "get_shorting_investor_volume_by_date",
     # Investor data
     "get_market_trading_volume_by_investor",
     "get_market_trading_value_by_investor",
@@ -61,4 +68,7 @@ __all__ = [
     "get_market_price_change",
     # Gold price
     "get_gold_price_by_date",
+    "get_latest_gold_price",
+    "get_gold_price_change",
+    "get_recent_gold_price",
 ]

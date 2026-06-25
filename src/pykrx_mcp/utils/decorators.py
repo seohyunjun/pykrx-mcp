@@ -1,6 +1,8 @@
 """Decorators for MCP tool error handling."""
 
+import contextlib
 import logging
+import sys
 from collections.abc import Callable
 from functools import wraps
 from typing import Any
@@ -33,7 +35,12 @@ def mcp_tool_error_handler(func: Callable) -> Callable:
         logger.info(f"[{func_name}] Called with kwargs={kwargs}")
 
         try:
-            result = func(*args, **kwargs)
+            # pykrx may print KRX login/refresh progress to stdout during a
+            # fetch (e.g. when its 1-hour session expires). On the stdio MCP
+            # transport stdout is the JSON-RPC channel, so redirect any such
+            # output to stderr to keep the protocol stream clean.
+            with contextlib.redirect_stdout(sys.stderr):
+                result = func(*args, **kwargs)
 
             # Count data rows if available for logging
             if isinstance(result, dict) and "data" in result:

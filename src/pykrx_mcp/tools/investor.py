@@ -8,7 +8,7 @@ from pykrx import stock
 
 from ..utils.decorators import handle_pykrx_errors
 from ..utils.formatters import dict_to_table
-from ..utils.validators import validate_date_format, validate_ticker
+from ..utils.validators import validate_date, validate_ticker
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +36,7 @@ def get_market_trading_volume_by_investor(
         f"from {start_date} to {end_date}"
     )
 
-    if not validate_date_format(start_date) or not validate_date_format(end_date):
+    if not validate_date(start_date) or not validate_date(end_date):
         return {
             "error": "Invalid date format. Use YYYYMMDD (e.g., '20240101').",
             "start_date": start_date,
@@ -102,7 +102,7 @@ def get_market_trading_value_by_investor(
         f"from {start_date} to {end_date}"
     )
 
-    if not validate_date_format(start_date) or not validate_date_format(end_date):
+    if not validate_date(start_date) or not validate_date(end_date):
         return {
             "error": "Invalid date format. Use YYYYMMDD (e.g., '20240101').",
             "start_date": start_date,
@@ -171,7 +171,7 @@ def get_market_net_purchases_of_equities(
         f"from {start_date} to {end_date}"
     )
 
-    if not validate_date_format(start_date) or not validate_date_format(end_date):
+    if not validate_date(start_date) or not validate_date(end_date):
         return {
             "error": "Invalid date format. Use YYYYMMDD (e.g., '20240101').",
             "start_date": start_date,
