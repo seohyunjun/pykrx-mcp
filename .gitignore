@@ -55,3 +55,8 @@ htmlcov/
 # Node.js (for MCP Inspector)
 node_modules/
 package-lock.json
+
+.env
+.env*
+!.env.example
+.omc/

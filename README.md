@@ -42,13 +42,26 @@ Claude Desktop 설정 파일을 직접 수정:
   "mcpServers": {
     "pykrx": {
       "command": "uvx",
-      "args": ["pykrx-mcp"]
+      "args": ["pykrx-mcp"],
+      "env": {
+        "KRX_ID": "your_krx_id",
+        "KRX_PW": "your_krx_password"
+      }
     }
   }
 }
 ```
 
 설정 후 Claude Desktop을 재시작하면 바로 사용할 수 있습니다.
+
+> **⚠️ 공매도(Short Selling) 데이터에는 KRX 로그인이 필요합니다.**
+> `get_shorting_*` 등 일부 엔드포인트는 [KRX 데이터광장](https://data.krx.co.kr)
+> 계정 인증이 필요합니다. 위 `env` 블록에 `KRX_ID`/`KRX_PW`를 넣어야 동작합니다.
+> 자격증명이 없으면 KRX가 빈 응답을 돌려주어 "No data found" 로 보입니다.
+>
+> `uvx`로 실행하면 패키지가 격리된 환경에 설치되므로 레포의 `.env` 파일은
+> **읽히지 않습니다.** 반드시 위처럼 MCP 클라이언트 설정의 `env` 블록을
+> 사용하세요. (주가/지수 등 비인증 엔드포인트는 자격증명 없이도 동작합니다.)
 
 ---
 

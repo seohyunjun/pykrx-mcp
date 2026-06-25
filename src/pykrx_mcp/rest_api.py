@@ -6,7 +6,6 @@ for use with ChatGPT Custom GPT Actions.
 """
 
 import logging
-import sys
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -35,13 +34,10 @@ from pykrx_mcp.tools.ticker_info import (
 from pykrx_mcp.tools.trading_value import (
     get_market_trading_value_by_date as get_trading_value_impl,
 )
+from pykrx_mcp.utils import configure_logging
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    stream=sys.stderr,
-)
+# Configure logging (stderr always; rotating file when LOG_FILE is set).
+configure_logging()
 logger = logging.getLogger(__name__)
 
 # Create FastAPI app
